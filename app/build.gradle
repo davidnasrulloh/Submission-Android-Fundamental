@@ -15,6 +15,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def localProperties = new Properties()
+        localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+        buildConfigField("String", "API_KEY", "\"" + localProperties['apiKey'] + "\"")
     }
 
     buildTypes {
@@ -30,15 +35,43 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    // Android
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // Circular Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Retrofit
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
+
+    // Testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // LeakCanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 }
