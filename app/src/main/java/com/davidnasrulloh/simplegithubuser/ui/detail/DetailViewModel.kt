@@ -1,17 +1,26 @@
-package com.davidnasrulloh.simplegithubuser.ui.viewmodel
+package com.davidnasrulloh.simplegithubuser.ui.detail
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.davidnasrulloh.simplegithubuser.data.local.FavoriteUserRepository
+import com.davidnasrulloh.simplegithubuser.data.local.entity.FavoriteEntity
 import com.davidnasrulloh.simplegithubuser.data.network.api.ApiConfig
 import com.davidnasrulloh.simplegithubuser.data.network.response.User
 import com.davidnasrulloh.simplegithubuser.utils.Utils.Companion.TOKEN
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import com.davidnasrulloh.simplegithubuser.data.local.Result
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(private val repository: FavoriteUserRepository) : ViewModel() {
+
     private val _isLoading = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -23,6 +32,11 @@ class DetailViewModel : ViewModel() {
 
     private val _user = MutableLiveData<User?>(null)
     val user: LiveData<User?> = _user
+
+
+    companion object {
+        private val TAG = DetailViewModel::class.java.simpleName
+    }
 
 
     fun getUserDetail(username: String) {
@@ -50,7 +64,18 @@ class DetailViewModel : ViewModel() {
         }
     }
 
-    companion object {
-        private val TAG = DetailViewModel::class.java.simpleName
+    fun saveAsFavorite(user: FavoriteEntity) {
+        viewModelScope.launch {
+            repository.saveUserAsFavorite(user)
+        }
     }
+
+    fun deleteFromFavorite(user: FavoriteEntity) {
+        viewModelScope.launch {
+            repository.deleteFromFavorite(user)
+        }
+    }
+
+    fun isFavoriteUser(id: String): Flow<Boolean> = repository.isFavoriteUser(id)
+
 }

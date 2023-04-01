@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.GitHub" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Simplegithubuser" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/iron_200</item>
         <item name="colorPrimaryVariant">@color/iron_500</item>

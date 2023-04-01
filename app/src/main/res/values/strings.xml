@@ -12,6 +12,8 @@
     <string name="open_on_github">Open on GitHub</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
+    <string name="setting">Setting</string>
+    <string name="favorite">Favorite</string>
     <string name="github_username">GitHub Username</string>
     <string name="showing_results">Showing %d results</string>
     <string name="bio_dummy">This is my bio</string>
@@ -20,4 +22,6 @@
     <string name="user_profile_picture">User Profile Picture</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="theme">Tema (Theme)</string>
 </resources>

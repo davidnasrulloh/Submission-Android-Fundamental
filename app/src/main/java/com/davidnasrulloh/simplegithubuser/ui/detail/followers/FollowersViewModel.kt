@@ -1,5 +1,6 @@
-package com.davidnasrulloh.simplegithubuser.ui.viewmodel
+package com.davidnasrulloh.simplegithubuser.ui.detail.followers
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,31 +12,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowingViewModel : ViewModel() {
+class FollowersViewModel() : ViewModel() {
 
     private val _isLoading = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _following = MutableLiveData<ArrayList<SimpleUser>?>(null)
-    val following: LiveData<ArrayList<SimpleUser>?> = _following
+    private val _followers = MutableLiveData<ArrayList<SimpleUser>?>(null)
+    val followers: LiveData<ArrayList<SimpleUser>?> = _followers
 
-    /**
-     *  Get following information of an user
-     *
-     *  @param username GitHub username
-     *  @return Unit
-     */
-    fun getUserFollowing(username: String) {
+    fun getUserFollowers(username: String) {
         _isLoading.value = true
 
-        ApiConfig.getApiService().getUserFollowing(token = "Bearer ${Utils.TOKEN}", username)
+        ApiConfig.getApiService().getUserFollowers(token = "Bearer ${Utils.TOKEN}", username)
             .apply {
                 enqueue(object : Callback<ArrayList<SimpleUser>> {
                     override fun onResponse(
                         call: Call<ArrayList<SimpleUser>>,
                         response: Response<ArrayList<SimpleUser>>
                     ) {
-                        if (response.isSuccessful) _following.value = response.body()
+                        if (response.isSuccessful) _followers.value = response.body()
                         else Log.e(TAG, response.message())
                         _isLoading.value = false
                     }
@@ -43,15 +38,15 @@ class FollowingViewModel : ViewModel() {
                     override fun onFailure(call: Call<ArrayList<SimpleUser>>, t: Throwable) {
                         Log.e(TAG, t.message.toString())
 
-                        _following.value = arrayListOf()
+                        _followers.value = arrayListOf()
                         _isLoading.value = false
                     }
-
                 })
             }
     }
 
     companion object {
-        private val TAG = FollowingViewModel::class.java.simpleName
+        private val TAG = FollowersViewModel::class.java.simpleName
     }
+
 }

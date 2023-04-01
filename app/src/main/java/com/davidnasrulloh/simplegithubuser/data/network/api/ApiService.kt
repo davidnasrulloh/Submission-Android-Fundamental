@@ -26,7 +26,6 @@ interface ApiService {
     ): Call<User>
 
 
-
     @GET("users/{username}/followers")
     fun getUserFollowers(
         @Header("Authorization") token: String,
