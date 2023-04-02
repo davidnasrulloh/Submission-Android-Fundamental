@@ -23,6 +23,7 @@ import com.davidnasrulloh.simplegithubuser.utils.Utils.Companion.setImageGlide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import com.davidnasrulloh.simplegithubuser.data.local.Result
 
 class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -34,7 +35,6 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
     private var userDetail: FavoriteEntity? = null
     private var isFavorite: Boolean? = false
 
-    //    private lateinit var detailViewModel: DetailViewModel
     private val detailViewModel: DetailViewModel by viewModels() {
         ViewModelFactory.getInstance(this)
     }
@@ -49,33 +49,23 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         setViewPager()
         setToolbar(getString(R.string.profile))
 
-//        detailViewModel = obtainViewModel(this)
-
-        detailViewModel.user.observe(this) { user ->
-            if (user != null) {
-                parseUserDetail(user)
-                profileUrl = user.htmlUrl
-            }
-        }
-
-        detailViewModel.isLoading.observe(this) {
-            showLoading(it)
-        }
-
-        detailViewModel.isError.observe(this) { error ->
-            if (error) errorOccurred()
-        }
-
-        detailViewModel.callCounter.observe(this) { counter ->
-            if (counter < 1) detailViewModel.getUserDetail(username!!)
-        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
+                    detailViewModel.userDetail.collect { result ->
+                        onDetailUserReceived(result)
+                    }
+                }
+                launch {
                     detailViewModel.isFavoriteUser(username ?: "").collect { state ->
                         isFavoriteUser(state)
                         isFavorite = state
+                    }
+                }
+                launch {
+                    detailViewModel.isLoaded.collect { loaded ->
+                        if (!loaded) detailViewModel.getDetailUser(username ?: "")
                     }
                 }
             }
@@ -85,6 +75,35 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         binding.btnOpen.setOnClickListener(this)
         binding.fabFavorite.setOnClickListener(this)
     }
+
+    private fun onDetailUserReceived(result: Result<User>) {
+        when (result) {
+            is Result.Loading -> showLoading(true)
+            is Result.Error -> {
+                errorOccurred()
+                showLoading(false)
+                Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+            }
+            is Result.Success -> {
+                result.data.let { user ->
+                    parseUserDetail(user)
+
+                    val favoriteEntity = FavoriteEntity(
+                        user.login,
+                        user.avatarUrl,
+                        true
+                    )
+
+                    userDetail = favoriteEntity
+                    profileUrl = user.htmlUrl
+                }
+
+                showLoading(false)
+                EspressoIdlingResource.decrement()
+            }
+        }
+    }
+
 
     private fun setLoading(state: Boolean) {
         binding.pbLoading.visibility = if (state) View.VISIBLE else View.INVISIBLE
