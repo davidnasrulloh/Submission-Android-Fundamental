@@ -1,5 +1,6 @@
-package com.davidnasrulloh.simplegithubuser.ui.viewmodel
+package com.davidnasrulloh.simplegithubuser.ui.detail.following
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,25 +12,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowersViewModel : ViewModel() {
+class FollowingViewModel() : ViewModel() {
 
     private val _isLoading = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _followers = MutableLiveData<ArrayList<SimpleUser>?>(null)
-    val followers: LiveData<ArrayList<SimpleUser>?> = _followers
+    private val _following = MutableLiveData<ArrayList<SimpleUser>?>(null)
+    val following: LiveData<ArrayList<SimpleUser>?> = _following
 
-    fun getUserFollowers(username: String) {
+    fun getUserFollowing(username: String) {
         _isLoading.value = true
 
-        ApiConfig.getApiService().getUserFollowers(token = "Bearer ${Utils.TOKEN}", username)
+        ApiConfig.getApiService().getUserFollowing(token = "Bearer ${Utils.TOKEN}", username)
             .apply {
                 enqueue(object : Callback<ArrayList<SimpleUser>> {
                     override fun onResponse(
                         call: Call<ArrayList<SimpleUser>>,
                         response: Response<ArrayList<SimpleUser>>
                     ) {
-                        if (response.isSuccessful) _followers.value = response.body()
+                        if (response.isSuccessful) _following.value = response.body()
                         else Log.e(TAG, response.message())
                         _isLoading.value = false
                     }
@@ -37,7 +38,7 @@ class FollowersViewModel : ViewModel() {
                     override fun onFailure(call: Call<ArrayList<SimpleUser>>, t: Throwable) {
                         Log.e(TAG, t.message.toString())
 
-                        _followers.value = arrayListOf()
+                        _following.value = arrayListOf()
                         _isLoading.value = false
                     }
 
@@ -46,7 +47,6 @@ class FollowersViewModel : ViewModel() {
     }
 
     companion object {
-        private val TAG = FollowersViewModel::class.java.simpleName
+        private val TAG = FollowingViewModel::class.java.simpleName
     }
-
 }

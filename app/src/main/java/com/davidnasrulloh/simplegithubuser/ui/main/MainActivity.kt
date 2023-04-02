@@ -1,4 +1,4 @@
-package com.davidnasrulloh.simplegithubuser.ui.view
+package com.davidnasrulloh.simplegithubuser.ui.main
 
 import android.app.SearchManager
 import android.content.Context
@@ -6,17 +6,23 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.davidnasrulloh.simplegithubuser.R
 import com.davidnasrulloh.simplegithubuser.adapter.ListUserAdapter
 import com.davidnasrulloh.simplegithubuser.data.network.response.SimpleUser
 import com.davidnasrulloh.simplegithubuser.databinding.ActivityMainBinding
-import com.davidnasrulloh.simplegithubuser.ui.view.DetailUserActivity.Companion.EXTRA_DETAIL
-import com.davidnasrulloh.simplegithubuser.ui.viewmodel.MainViewModel
+import com.davidnasrulloh.simplegithubuser.ui.detail.DetailUserActivity.Companion.EXTRA_DETAIL
+import com.davidnasrulloh.simplegithubuser.ui.detail.DetailUserActivity
+import com.davidnasrulloh.simplegithubuser.ui.detail.DetailViewModel
+import com.davidnasrulloh.simplegithubuser.ui.favorite.FavoriteActivity
+import com.davidnasrulloh.simplegithubuser.ui.setting.SettingActivity
+import com.davidnasrulloh.simplegithubuser.ui.view.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.home_menu, menu)
@@ -71,6 +78,22 @@ class MainActivity : AppCompatActivity() {
             })
         }
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.favorite -> {
+                Intent(this@MainActivity, FavoriteActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
+            R.id.setting -> {
+                Intent(this@MainActivity, SettingActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

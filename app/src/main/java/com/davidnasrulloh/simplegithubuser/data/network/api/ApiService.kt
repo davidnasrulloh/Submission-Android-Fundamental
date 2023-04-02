@@ -20,11 +20,10 @@ interface ApiService {
 
 
     @GET("users/{username}")
-    fun getUserDetail(
+    suspend fun getUserDetail(
         @Header("Authorization") token: String,
         @Path("username") username: String
-    ): Call<User>
-
+    ): User
 
 
     @GET("users/{username}/followers")

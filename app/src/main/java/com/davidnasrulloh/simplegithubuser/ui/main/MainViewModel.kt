@@ -1,9 +1,10 @@
-package com.davidnasrulloh.simplegithubuser.ui.viewmodel
+package com.davidnasrulloh.simplegithubuser.ui.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.davidnasrulloh.simplegithubuser.data.local.preferences.DarkModePreferences
 import com.davidnasrulloh.simplegithubuser.data.network.api.ApiConfig
 import com.davidnasrulloh.simplegithubuser.data.network.response.ResponseSearch
 import com.davidnasrulloh.simplegithubuser.data.network.response.SimpleUser
@@ -12,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel: ViewModel() {
+class MainViewModel() : ViewModel() {
 
     private val _isLoading = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading

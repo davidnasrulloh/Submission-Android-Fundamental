@@ -1,4 +1,4 @@
-package com.davidnasrulloh.simplegithubuser.ui.view
+package com.davidnasrulloh.simplegithubuser.ui.detail.following
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.davidnasrulloh.simplegithubuser.R
 import com.davidnasrulloh.simplegithubuser.adapter.ListUserAdapter
 import com.davidnasrulloh.simplegithubuser.adapter.SectionPagerAdapter.Companion.ARGS_USERNAME
 import com.davidnasrulloh.simplegithubuser.data.network.response.SimpleUser
 import com.davidnasrulloh.simplegithubuser.databinding.FragmentFollowingBinding
-import com.davidnasrulloh.simplegithubuser.ui.viewmodel.FollowingViewModel
+import com.davidnasrulloh.simplegithubuser.ui.detail.DetailUserActivity
 
 class FollowingFragment : Fragment() {
 
