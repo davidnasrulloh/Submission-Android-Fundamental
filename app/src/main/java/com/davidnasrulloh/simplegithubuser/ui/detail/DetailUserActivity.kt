@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.davidnasrulloh.simplegithubuser.R
 import com.davidnasrulloh.simplegithubuser.adapter.SectionPagerAdapter
@@ -14,6 +17,7 @@ import com.davidnasrulloh.simplegithubuser.data.local.entity.FavoriteEntity
 import com.davidnasrulloh.simplegithubuser.data.network.response.User
 import com.davidnasrulloh.simplegithubuser.databinding.ActivityDetailUserBinding
 import com.davidnasrulloh.simplegithubuser.ui.view.ViewModelFactory
+import com.davidnasrulloh.simplegithubuser.utils.EspressoIdlingResource
 import com.davidnasrulloh.simplegithubuser.utils.Utils.Companion.setAndVisible
 import com.davidnasrulloh.simplegithubuser.utils.Utils.Companion.setImageGlide
 import com.google.android.material.tabs.TabLayout
@@ -30,8 +34,8 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
     private var userDetail: FavoriteEntity? = null
     private var isFavorite: Boolean? = false
 
-//    private lateinit var detailViewModel: DetailViewModel
-    private val detailViewModel: DetailViewModel by viewModels {
+    //    private lateinit var detailViewModel: DetailViewModel
+    private val detailViewModel: DetailViewModel by viewModels() {
         ViewModelFactory.getInstance(this)
     }
 
@@ -66,6 +70,17 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
             if (counter < 1) detailViewModel.getUserDetail(username!!)
         }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    detailViewModel.isFavoriteUser(username ?: "").collect { state ->
+                        isFavoriteUser(state)
+                        isFavorite = state
+                    }
+                }
+            }
+        }
+
 
         binding.btnOpen.setOnClickListener(this)
         binding.fabFavorite.setOnClickListener(this)
@@ -73,6 +88,11 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setLoading(state: Boolean) {
         binding.pbLoading.visibility = if (state) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EspressoIdlingResource.increment()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -90,17 +110,6 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
                     startActivity(it)
                 }
             }
-//            R.id.fab_favorite -> {
-//                if (isFavorite == true) {
-//                    userDetail?.let { detailViewModel.deleteFromFavorite(it) }
-//                    isFavoriteUser(false)
-//                    Toast.makeText(this, "User deleted from favorite", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    userDetail?.let { detailViewModel.saveAsFavorite(it) }
-//                    isFavoriteUser(true)
-//                    Toast.makeText(this, "User added to favorite", Toast.LENGTH_SHORT).show()
-//                }
-//            }
             R.id.fab_favorite -> {
                 if (isFavorite == true) {
                     userDetail?.let { detailViewModel.deleteFromFavorite(it) }
@@ -115,11 +124,6 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-//    private fun obtainViewModel(activity: AppCompatActivity): DetailViewModel {
-//        val factory = ViewModelFactory.getInstance(activity.application)
-//        return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
-//    }
-
     override fun onDestroy() {
         _binding = null
         username = null
@@ -127,6 +131,7 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         isFavorite = null
         super.onDestroy()
     }
+
     private fun isFavoriteUser(favorite: Boolean) {
         if (favorite) {
             binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)

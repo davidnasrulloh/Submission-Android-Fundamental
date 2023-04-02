@@ -1,8 +1,6 @@
 package com.davidnasrulloh.simplegithubuser.data.local.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.davidnasrulloh.simplegithubuser.data.local.FavoriteUserRepository
 import com.davidnasrulloh.simplegithubuser.data.local.entity.FavoriteEntity
 import kotlinx.coroutines.flow.Flow
 
